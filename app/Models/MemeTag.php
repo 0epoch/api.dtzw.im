@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StickerTag extends Model
+class memeTag extends Model
 {
 
-    protected $table = 'sticker_tag';
+    protected $table = 'meme_tag';
 }

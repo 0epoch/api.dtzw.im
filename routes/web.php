@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return 'hello docker laravel';
+    return 'dtzw';
 });
 
 Route::get('/tags', 'TagsController@index');

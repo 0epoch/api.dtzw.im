@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStickerTagTable extends Migration
+class CreatememeTagTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateStickerTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('sticker_tag', function (Blueprint $table) {
+        Schema::create('meme_tag', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('sticker_id');
+            $table->integer('meme_id');
             $table->integer('tag_id');
             $table->timestamps();
         });
@@ -28,6 +28,6 @@ class CreateStickerTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sticker_tag');
+        Schema::dropIfExists('meme_tag');
     }
 }

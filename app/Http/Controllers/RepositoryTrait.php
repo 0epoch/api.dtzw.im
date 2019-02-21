@@ -12,15 +12,21 @@ namespace App\Http\Controllers;
 trait RepositoryTrait
 {
 
+    public function userRepository()
+    {
+        $repository = new \App\User();
+        return $repository;
+    }
+
     public function tagRepository()
     {
         $repository = new \App\Repository\TagRepository();
         return $repository;
     }
 
-    public function stickerRepository()
+    public function memeRepository()
     {
-        $repository = new \App\Repository\StickerRepository();
+        $repository = new \App\Repository\memeRepository();
         return $repository;
     }
 

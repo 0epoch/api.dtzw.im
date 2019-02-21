@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Repository;
@@ -8,59 +7,65 @@ use App\Models\Favorite;
 class FavoriteRepository
 {
 
+    /**
+     * 写入新建收藏夹
+     * @param $attr
+     */
     public function saveFavorite($attr)
     {
+        $user = auth('api')->user();
         $favorite = new Favorite();
-
         $favorite->name = $attr['name'];
-        $favorite->user_id = $attr['userId'];
-        $favorite->author = $attr['author'];
+        $favorite->user_id = 1;
+        $favorite->author = 'test';
         $favorite->description = $attr['description'];
-        $favorite->is_private = $attr['isPrivate'];
+        $favorite->is_private = isset($attr['isPrivate']) ? $attr['isPrivate'] : 'N';
         $favorite->save();
+        return $favorite;
     }
 
+    /**
+     * 写入关注收藏夹用户
+     * @param $favoriteId
+     * @param $userId
+     * @return bool
+     */
     public function saveFollowers($favoriteId, $userId)
     {
-        $favorite = new Favorite();
-        if(0==$favorite->followsThis($favoriteId)) {
+
+        $favorite = Favorite::find($favoriteId);
+        if(0 == $favorite->followed($userId)) {
             //关注收藏夹
-            $favoriteUser = new FavoriteUser();
-            $favoriteUser->user_id = $userId;
-            $favoriteUser->favorite_id = $favoriteId;
-            $favoriteUser->save();
+            $favorite->users()->attach($userId);
             //关注数+1
             $this->addFollowsNum($favoriteId);
 
         } else {
             //取消关注收藏夹
-            FavoriteUser::where('favorite_id', $favoriteId)->delete();
+            $favorite->users()->detach($userId);
             //关注数-1
-            Favorite::where('id', $favoriteId)->decrement('follows_num');
+            Favorite::where('id', $favoriteId)->decrement('followers_num');
         }
         return true;
     }
 
     /**
-     * 添加表情到收藏夹
+     * 从收藏夹添加--删除表情
      * @param $favoriteId
-     * @param $stickerId
+     * @param $memeId
      */
-    public function saveToFavorite($favoriteId, $stickerId)
+    public function saveToFavorite($favoriteId, $memeId)
     {
         $favorite = Favorite::find($favoriteId);
-        if(0==$favorite->hasThis($stickerId)) {
-            //删除收藏夹中表情
-            FavoriteSticker::where('favorite_id', $favoriteId)->delete();
-            Favorite::where('id', $favoriteId)->decrement('stickers_num');
+
+        if(0 == $favorite->hasThis($memeId)) {
+            $favorite->memes()->attach($memeId);
+            //表情数量+1
+            $this->addMemesNum($favoriteId);
 
         } else {
-            $favoriteSticker = new FavoriteSticker();
-            $favoriteSticker->favorite_id = $favoriteId;
-            $favoriteSticker->sticker_id = $stickerId;
-            $favoriteSticker->save();
-            //表情数量+1
-            $this->addStickersNum($favoriteId);
+            $favorite->memes()->detach($memeId);
+            Favorite::where('id', $favoriteId)->decrement('memes_num');
         }
         return true;
     }
@@ -71,34 +76,15 @@ class FavoriteRepository
      */
     public function addFollowsNum($id)
     {
-        Favorite::where('id', $id)->increment('follows_num');
+        Favorite::where('id', $id)->increment('followers_num');
     }
 
     /**
      * 表情数 + 1
      * @param $id
      */
-    public function addStickersNum($id)
+    public function addMemesNum($id)
     {
-        Favorite::where('id', $id)->increment('stickers_num');
-    }
-
-    /**
-     * 用户是否关注此收藏夹
-     * @param $favoriteId
-     * @param $userId
-     */
-    public function followed($favoriteId, $userId)
-    {
-        return FavoriteUser::where(['id' => $favoriteId, 'user_id' => $userId])->first();
-    }
-
-    /**
-     * 是否拥有此表情
-     * @param $sticker
-     */
-    public function hasThisSticker($stickerId, $favoriteId)
-    {
-        $favorite = Favorite::where('id', $favoriteId)->first();
+        Favorite::where('id', $id)->increment('memes_num');
     }
 }

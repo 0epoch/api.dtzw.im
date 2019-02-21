@@ -17,7 +17,7 @@ class CreateTagsTable extends Migration
             $table->increments('id');
             $table->string('name', 32)->unique('tag_name');
             $table->string('describe', 120);
-            $table->integer('sticker_count');
+            $table->integer('meme_count');
             $table->integer('followers');
             $table->integer('follow_count');
             $table->timestamps();

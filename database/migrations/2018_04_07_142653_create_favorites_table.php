@@ -21,7 +21,7 @@ class CreateFavoritesTable extends Migration
             $table->char('is_private', 8)->default('F')->comment('是否仅自己可见');
             $table->unsignedMediumInteger('followers')->comment('关注者');
             $table->unsignedMediumInteger('follow_count')->comment('关注人数');
-            $table->unsignedMediumInteger('sticker_count')->comment('表情图数量');
+            $table->unsignedMediumInteger('meme_count')->comment('表情图数量');
             $table->char('is_block', 8)->default('F')->comment('是否删除');
             $table->timestamps();
         });

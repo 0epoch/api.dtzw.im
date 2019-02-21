@@ -1,28 +1,32 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gtianx
- * Date: 18-4-18
- * Time: 下午10:21
- */
 
 namespace App\Repository;
 
 use App\Models\Comment;
+use App\Models\Meme;
 
 class CommentRepository
 {
 
 
-    public function saveComment($attributes)
+    public function saveComment($data)
     {
+        $user = auth('api')->user();
         $comment = new Comment();
-        $comment->user_id = $attributes['userId'];
-        $comment->author = $attributes['author'];
-        $comment->sticker_id = $attributes['sticker_id'];
-        $comment->body = $attributes['body'];
-        $comment->is_block = 'F';
+        if(isset($data['comment_id'])) {
+            $result = Comment::where('id', $data['comment_id'])->firstOrFail();
+            $comment->target_user_id = $result->user_id;
+            $comment->parent_id = $data['parent_id'];
+        }
+
+        $comment->user_id = $user->id;
+        $comment->meme_id = $data['meme_id'];
+        $comment->content = $data['content'];
+
         $comment->save();
-        //更新sticker表当前sticker评论总数
+        //更新meme表当前meme评论总数
+        Meme::where('id', $data['meme_id'])->increment('comments_num');
+        return $comment;
     }
+
 }

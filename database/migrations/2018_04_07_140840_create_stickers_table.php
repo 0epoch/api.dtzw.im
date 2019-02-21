@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStickersTable extends Migration
+class CreatememesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateStickersTable extends Migration
      */
     public function up()
     {
-        Schema::create('stickers', function (Blueprint $table) {
+        Schema::create('memes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('sticker_url', 64);
+            $table->string('meme_url', 64);
             $table->unsignedMediumInteger('like')->comment('喜欢/点赞');
             $table->string('describe', 128)->comment('描述');
             $table->char('is_hidden', 8)->default('F')->comment('是否隐藏');
@@ -33,6 +33,6 @@ class CreateStickersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stickers');
+        Schema::dropIfExists('memes');
     }
 }

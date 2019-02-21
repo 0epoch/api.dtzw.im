@@ -16,7 +16,7 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->integer('sticker_id');
+            $table->integer('meme_id');
             $table->text('body');
             $table->integer('parent_id')->default(0)->comment('回复目标ID');
             $table->char('is_block');

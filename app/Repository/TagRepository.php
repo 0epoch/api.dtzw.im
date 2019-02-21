@@ -18,14 +18,17 @@ class TagRepository
         return Tag::all();
     }
 
+
     public function saveTag(array $data)
     {
         $tag = new Tag();
-        $tag->name = $data['name'];
-        $tag->describe = $data['describe'];
+        $tag->name = $data['data'];
+        // $tag->describe = $data['describe'];
+        $tag->thumb_path = $data['thumb_path'];
         $tag->save();
         return $tag;
     }
+
 
     public function setFollowers($id, $userId)
     {
@@ -33,13 +36,13 @@ class TagRepository
         return ture;
     }
 
-    public function addStickersNum($id)
+    public function addMemesNum($id)
     {
-        Tag::where('id', $id)->increment('stickers_num');
+        Tag::where('id', $id)->increment('memes_num');
         return ture;
     }
 
-    public function addFollowNum()
+    public function addFollowNum($id)
     {
         Tag::where('id', $id)->increment('follows_num');
         return ture;

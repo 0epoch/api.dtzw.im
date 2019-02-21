@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'cos'),
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +55,7 @@ return [
             'visibility' => 'public',
         ],
 
-        'stickers' => [
+        'memes' => [
 
             'driver' => 'local',
             // 文件将上传到storage/app/uploads目录
@@ -73,6 +73,14 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+
+        'cos' => [
+            'driver' => 'cos',
+            'secret_id' => 'AKIDZ3NWXRgoMky1zorwHSSH9wojeVHzFE9t',
+            'secret_key' => 'kShx794oNtLcp9LNE1d4LXYO4Zu691iQ',
+            'region'     => 'ap-guangzhou',
+            'bucket'     => 'gtianx-1255608243',
+        ]      
 
     ],
 

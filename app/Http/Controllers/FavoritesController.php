@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FavoriteResource;
 use App\Models\Favorite;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class FavoritesController extends Controller
+class FavoritesController extends BaseController
 {
     use RepositoryTrait;
 
@@ -14,9 +16,10 @@ class FavoritesController extends Controller
 
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
+        $favorite = $this->favoriteRepository()->saveFavorite($request->all());
+        return $this->success($favorite);
     }
 
     /**
@@ -38,12 +41,20 @@ class FavoritesController extends Controller
      * 用户关注表情包(收藏夹)
      * @param Request $request
      */
-    public  function followsThisFavorite(Request $request)
+    public  function follows(Request $request)
     {
         $id = $request->get('id');
         $userId = $request->get('userId');
-        $this->fovariteRepository()->saveFollowers($id, $userId);
 
+        $user = User::find($userId);
+
+        $followed = $user->followThisFavorite($id);
+        if(count($followed['attached']) > 0) {
+            Favorite::where('id', $id)->increment('followers_num');
+
+        } else {
+            Favorite::where('id', $id)->decrement('followers_num');
+        }
         return response()->json('成功');
     }
 
@@ -51,16 +62,21 @@ class FavoritesController extends Controller
      * 添加表情到收藏夹(从收藏夹删除表情)
      * @param Request $request
      */
-    public function comeAndGoFavorite(Request $request)
+    public function toggle(Request $request)
     {
-        $stickerId = $request->get('stickerId');
+        $meme_id = $request->get('meme_id');
+        $favorite_id = $request->get('favorite_id');
+        $result = $this->favoriteRepository()->saveToFavorite($favorite_id, $meme_id);
+        return $this->success($result);
+    }
+
+    /**
+     * 删除收藏夹
+     */
+    public function delete(Request $request)
+    {
+        //删除收藏夹
         $favoriteId = $request->get('favoriteId');
-
-        //添加到
-        $favorite = Favorite::where('id', $favoriteId)->first();
-
-        //删除掉
-
-        $this->favoriteRepository()->saveAddTo($favoriteId, $stickerId);
+        Favorite::where('id', $favoriteId)->update('is_remove', 'T');
     }
 }
